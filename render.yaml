@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: dr-screening-system
+    runtime: python
+    region: singapore
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir web_ui --workers 2 --threads 4 --timeout 120 server:app
+    healthCheckPath: /model-status
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: RETINACARE_SESSION_SECRET
+        generateValue: true

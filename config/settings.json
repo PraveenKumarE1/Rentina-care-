@@ -1,0 +1,7 @@
+{
+  "quality": {"minFocus": 25, "minContrast": 0.08, "minFovDiameter": 0.45, "minSnr": 1.8},
+  "grading": {"referableLevel": 2, "modelWeight": 0.0, "ruleWeight": 1.0},
+  "report": {"language": "en", "outputDirectory": "reports"},
+  "database": {"file": "dr_screening.sqlite"},
+  "api": {"port": 8080, "apiKeyEnvironmentVariable": "DR_API_KEY"}
+}
