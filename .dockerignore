@@ -1,0 +1,30 @@
+.git
+.github
+.vscode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+Thumbs.db
+
+# Local runtime data
+uploads/
+database/*.sqlite3
+
+# Ignore generated/training artifacts unless needed for runtime
+user_training/
+reviewer_feedback/
+models/
+*.pt
+*.onnx
+*.h5
+*.pkl
+
+# Keep docs and source, but reduce upload size
+*.log
