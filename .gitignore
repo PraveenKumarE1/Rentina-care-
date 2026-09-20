@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.py[cod]
+web_ui/uploads/
+database/*.sqlite3
+models/*.pt
+datasets/aptos2019/
+datasets/user_training/

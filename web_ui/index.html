@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RetinaCare | Diabetic Retinopathy Screening</title>
+  <style>
+    :root {
+      --navy: #073B3A;
+      --blue: #0A5C55;
+      --teal: #167A45;
+      --cyan: #EFF8EE;
+      --white: #FFFFFF;
+      --orange: #69AD36;
+      --red: #E74C3C;
+      --bg-1: #F7FCF5;
+      --bg-2: #EAF6E8;
+      --bg-3: #DCEEDB;
+      --panel: rgba(255, 255, 255, 0.9);
+      --panel-strong: #FFFFFF;
+      --line: rgba(11, 31, 58, 0.12);
+      --ink: #123D3A;
+      --muted: #55736D;
+      --soft: rgba(22, 122, 69, 0.10);
+      --accent: #0A5C55;
+      --accent-2: #5AA832;
+      --accent-3: #EFF8EE;
+      --success: #167A45;
+      --warning: #69AD36;
+      --danger: #E74C3C;
+      --shadow: rgba(11, 31, 58, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(90, 168, 50, 0.16), transparent 24%),
+        radial-gradient(circle at 88% 92%, rgba(10, 92, 85, 0.14), transparent 28%),
+        linear-gradient(140deg, var(--bg-1), var(--bg-2) 52%, var(--bg-3));
+      color: var(--ink);
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app {
+      width: min(1220px, 100%);
+      background: rgba(255, 255, 255, 0.74);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 30px;
+      box-shadow: 0 24px 80px var(--shadow);
+      backdrop-filter: blur(16px);
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 6px 4px 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 184px;
+      height: 92px;
+      object-fit: contain;
+      object-position: left center;
+      display: block;
+      filter: drop-shadow(0 8px 16px rgba(10, 92, 85, 0.16));
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      letter-spacing: -0.05em;
+      line-height: 1.1;
+    }
+
+    .brand-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .nav span, .nav button {
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav span.active, .nav button.active {
+      color: var(--ink);
+    }
+
+    .nav span.active::after, .nav button.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -8px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ghost-btn {
+      border: 1px solid var(--line);
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 700;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .metric-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+    }
+
+    .metric-value {
+      font-size: clamp(1.8rem, 2vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-top: 10px;
+    }
+
+    .metric-trend {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      margin-top: 26px;
+    }
+
+    .box {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(16, 40, 61, 0.04);
+      min-width: 0;
+    }
+
+    .box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .upload-label {
+      display: block;
+      width: 100%;
+      padding: 20px 18px;
+      text-align: center;
+      cursor: pointer;
+      border: 1.5px dashed rgba(22, 119, 255, 0.7);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(21,140,255,0.12), rgba(0,200,160,0.09));
+      color: var(--accent-3);
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .upload-label:hover {
+      transform: translateY(-1px);
+      border-color: rgba(0,191,166,0.9);
+      background: linear-gradient(135deg, rgba(22,119,255,0.08), rgba(0,191,166,0.08));
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .button-row {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 0.96rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 24px rgba(22,119,255,0.22);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button.secondary {
+      background: rgba(21, 140, 255, 0.13);
+      border: 1px solid rgba(121, 193, 255, 0.25);
+      color: var(--accent-3);
+      box-shadow: none;
+    }
+
+    .nav button {
+      padding: 4px 0;
+      border: 0;
+      border-radius: 0;
+      color: inherit;
+      background: transparent;
+      box-shadow: none;
+      font: inherit;
+    }
+
+    .nav button:hover { color: var(--accent); box-shadow: none; transform: none; }
+
+    .home-hero {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 22px;
+      margin: 24px 0;
+      padding: 30px;
+      border-radius: 24px;
+      color: white;
+      background: linear-gradient(135deg, #073B3A, #0A5C55 58%, #4E972F);
+    }
+
+    .home-hero h2 { margin: 8px 0 12px; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.08; }
+    .home-hero p { max-width: 680px; margin: 0; color: rgba(255,255,255,0.82); line-height: 1.65; }
+    .home-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+    .home-actions button { background: white; color: var(--navy); box-shadow: none; }
+    .home-actions .secondary { color: white; background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.32); }
+    .home-stat { display: grid; place-content: center; gap: 12px; padding: 22px; border-radius: 18px; background: rgba(255,255,255,0.12); }
+    .home-stat strong { font-size: 2.3rem; }
+    .home-stat span { font-size: 0.84rem; color: rgba(255,255,255,0.78); }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 24px 0; }
+    .feature-card { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--white); }
+    .feature-card h3 { margin: 8px 0; font-size: 1rem; }
+    .feature-card p { margin: 0; color: var(--muted); font-size: 0.86rem; line-height: 1.55; }
+    .feature-icon { color: var(--teal); font-size: 1.25rem; font-weight: 800; }
+    .about-section { margin-top: 24px; scroll-margin-top: 20px; }
+    .about-section p { color: var(--muted); line-height: 1.65; }
+    .model-insight { margin-top: 14px; padding: 13px 15px; border-left: 4px solid var(--teal); border-radius: 10px; background: var(--cyan); color: var(--navy); font-size: 0.84rem; line-height: 1.5; white-space: pre-line; }
+    .how-section, .details-section { margin-top: 24px; scroll-margin-top: 20px; }
+    .step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+    .step-card { position: relative; padding: 18px 16px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); }
+    .step-number { display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; background: var(--cyan); color: var(--teal); font-size: 0.76rem; font-weight: 800; }
+    .step-card h3 { margin: 12px 0 6px; font-size: 0.98rem; }
+    .step-card p, .detail-card p { margin: 0; color: var(--muted); font-size: 0.84rem; line-height: 1.55; }
+    .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+    .detail-card { padding: 16px; border-left: 3px solid var(--accent-2); border-radius: 10px; background: var(--cyan); }
+    .detail-card h3 { margin: 0 0 7px; color: var(--navy); font-size: 0.91rem; }
+
+    .care-path {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      margin: 0 0 24px;
+      overflow: hidden;
+      border: 1px solid rgba(10, 92, 85, 0.16);
+      border-radius: 16px;
+      background: rgba(10, 92, 85, 0.16);
+    }
+
+    .care-path-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 70px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .care-path-item strong { display: block; color: var(--navy); font-size: 0.85rem; }
+    .care-path-item span { display: block; margin-top: 3px; color: var(--muted); font-size: 0.72rem; }
+    .care-path-icon {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      border-radius: 50%;
+      background: var(--cyan);
+      color: var(--teal);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    button.is-speaking {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+
+    button.is-listening { background: var(--red); border-color: var(--red); color: white; }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .status {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      min-height: 22px;
+    }
+
+    .preview {
+      margin-top: 20px;
+      min-height: 240px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--navy), #123a67);
+      border: 1px solid rgba(11, 31, 58, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    #cameraVideo, #previewImage {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 390px;
+      object-fit: cover;
+      background: #091722;
+    }
+
+    #cameraVideo { display: none; }
+    #previewImage { display: none; }
+
+    .result-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .status-pill {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(0, 191, 166, 0.12);
+      color: var(--success);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .result {
+      min-height: 330px;
+      padding: 20px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(12, 34, 45, 0.94), rgba(9, 21, 31, 0.96));
+      border: 1px solid rgba(0, 191, 166, 0.2);
+      color: #effaf7;
+      white-space: pre-wrap;
+      line-height: 1.75;
+      font-size: 0.97rem;
+    }
+
+    .result .label {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0, 191, 166, 0.13);
+      color: #baf7d8;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: linear-gradient(145deg, rgba(11,31,58,0.98), rgba(0,191,166,0.7));
+    }
+
+    .login-card {
+      width: min(440px, 100%);
+      padding: 34px;
+      border-radius: 26px;
+      background: var(--white);
+      box-shadow: 0 24px 70px rgba(3, 20, 44, 0.3);
+    }
+
+    .login-card h2 { margin: 14px 0 6px; color: var(--navy); }
+    .login-card p { margin: 0 0 22px; color: var(--muted); line-height: 1.6; }
+    .login-card input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--navy);
+      background: var(--cyan);
+      font: inherit;
+    }
+
+    .profile-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(11, 31, 58, 0.82);
+    }
+
+    .profile-card {
+      width: min(460px, 100%);
+      padding: 32px;
+      border-radius: 26px;
+      background: var(--white);
+      box-shadow: 0 24px 70px rgba(3, 20, 44, 0.3);
+    }
+
+    .profile-card h2 { margin: 0 0 8px; color: var(--navy); }
+    .profile-card p { margin: 0 0 20px; color: var(--muted); line-height: 1.6; }
+    .profile-step { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; color: var(--teal); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .profile-step span { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: white; background: var(--teal); }
+    .profile-email { margin: -8px 0 18px; padding: 10px 12px; border-radius: 10px; background: var(--cyan); color: var(--navy); font-size: 0.82rem; }
+    .privacy-note { margin-top: 14px !important; font-size: 0.74rem; }
+    .profile-card label { display: block; margin: 14px 0 6px; color: var(--navy); font-size: 0.78rem; font-weight: 800; }
+    .guide-card { margin-top: 18px; }
+    .guide-content { min-height: 130px; padding: 18px; border-radius: 18px; background: linear-gradient(145deg, var(--navy), #164f76); color: var(--white); white-space: pre-wrap; line-height: 1.65; font-size: 0.9rem; }
+    .teach-panel { margin-top: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--cyan); }
+    .teach-panel p { margin: 0 0 10px; color: var(--navy); font-size: 0.78rem; line-height: 1.45; }
+    .teach-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .teach-controls select { flex: 1 1 180px; min-width: 0; padding: 11px; border: 1px solid var(--line); border-radius: 10px; color: var(--navy); background: var(--white); font: inherit; }
+    .teach-status { margin-top: 8px; color: var(--teal); font-size: 0.76rem; }
+
+    .login-error { min-height: 22px; margin-top: 10px; color: var(--red); font-size: 0.82rem; }
+    .login-logo { width: 220px; height: 112px; object-fit: contain; object-position: left center; }
+    .language-tools { display: flex; gap: 8px; margin: 12px 0 0; }
+    .language-tools select { border: 1px solid var(--line); border-radius: 10px; padding: 8px; color: var(--navy); background: var(--white); }
+    .hidden { display: none !important; }
+
+    .history-card {
+      margin-top: 18px;
+    }
+
+    .history-table-wrap {
+      overflow-x: auto;
+      min-width: 0;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .history-table th {
+      padding: 10px 8px;
+      text-align: left;
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .history-table td {
+      padding: 11px 8px;
+      color: var(--navy);
+      border-bottom: 1px solid rgba(11, 31, 58, 0.07);
+      white-space: nowrap;
+    }
+
+    .history-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .history-status {
+      color: var(--teal) !important;
+      font-weight: 800;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 28px 4px 18px;
+    }
+
+    .page-heading h2 {
+      margin: 5px 0 4px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.06em;
+      color: var(--navy);
+    }
+
+    .page-heading p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .date-chip {
+      padding: 11px 15px;
+      border-radius: 12px;
+      background: var(--white);
+      color: var(--navy);
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid var(--line);
+    }
+
+    .tool-strip {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      width: min(520px, 100%);
+      padding: 10px 16px;
+      border-radius: 18px;
+      background: var(--navy);
+      color: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+      margin: 0 0 22px;
+    }
+
+    .tool-strip .tool-active {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: white;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .vitals-column, .main-column, .reports-column {
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .person-card, .vital-card, .appointment, .report-thumb {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .person-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 16px;
+    }
+
+    .person-card strong, .appointment strong {
+      display: block;
+      color: var(--navy);
+      font-size: 0.9rem;
+    }
+
+    .person-card small, .appointment small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      margin-top: 4px;
+    }
+
+    .person-avatar {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--teal);
+      background: var(--cyan);
+    }
+
+    .vital-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .vital-card small, .vital-card strong, .vital-card em {
+      display: block;
+    }
+
+    .vital-card small {
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .vital-card strong {
+      margin-top: 5px;
+      font-size: 1.65rem;
+      color: var(--navy);
+      letter-spacing: -0.05em;
+    }
+
+    .vital-card em {
+      margin-top: 4px;
+      color: var(--teal);
+      font-size: 0.68rem;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .orange-text { color: var(--orange) !important; }
+
+    .vital-icon {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      border-radius: 50%;
+      color: white;
+      background: var(--blue);
+      font-weight: 800;
+    }
+
+    .vital-icon.coral { background: var(--red); }
+    .vital-icon.teal { background: var(--teal); }
+
+    .section-heading {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading h3 {
+      margin: 4px 0 0;
+      color: var(--navy);
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-heading a {
+      color: var(--teal);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .live-dot {
+      color: var(--teal);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .intake-layout {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .intake-actions {
+      min-width: 0;
+    }
+
+    .upload-symbol {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--blue);
+      font-size: 1.5rem;
+    }
+
+    .intake-card .preview {
+      min-height: 250px;
+      margin-top: 0;
+    }
+
+    .report-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .report-thumb {
+      min-height: 100px;
+      padding: 12px;
+      color: rgba(255,255,255,0.78);
+      font-size: 0.68rem;
+      line-height: 1.2;
+    }
+
+    .report-thumb strong {
+      display: block;
+      margin-top: 8px;
+      color: white;
+      font-size: 0.88rem;
+    }
+
+    .blue-report { background: linear-gradient(145deg, var(--blue), #0b4fc4); }
+    .teal-report { background: linear-gradient(145deg, var(--teal), #008c82); }
+    .orange-report { background: linear-gradient(145deg, var(--orange), #d87423); }
+
+    .appointment-card { align-self: start; }
+
+    .appointment {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px;
+      margin-top: 10px;
+    }
+
+    .appointment-icon {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      border-radius: 50%;
+      color: white;
+      background: var(--orange);
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .appointment-icon.teal { background: var(--teal); }
+    .appointment .arrow { margin-left: auto; color: var(--blue); font-weight: 800; }
+
+    /* Refined, low-distraction clinical workspace. */
+    body { padding: 18px; background: #f7fcf5; }
+    .app { max-width: 1180px; background: rgba(255,255,255,0.96); border-radius: 20px; box-shadow: 0 14px 44px rgba(11,31,58,0.10); backdrop-filter: none; }
+    .topbar { padding-bottom: 16px; }
+    .logo { width: 184px; height: 92px; filter: none; }
+    .brand-text { display: none; }
+    .brand-text h1 { font-size: 1.75rem; }
+    .brand-sub { font-size: 0.68rem; letter-spacing: 0.1em; }
+    .home-hero { margin: 20px 0; padding: 28px; border-radius: 18px; background: linear-gradient(135deg, #073b3a, #0a5c55 64%, #5aa832); }
+    .home-hero h2 { max-width: 640px; font-size: clamp(1.8rem, 3.4vw, 2.8rem); }
+    .feature-grid { gap: 12px; margin: 20px 0; }
+    .feature-card, .box, .metric-card { border-radius: 16px; box-shadow: none; }
+    .feature-card { padding: 16px; }
+    .page-heading { margin-top: 34px; }
+    .box { padding: 20px; }
+    button { border-radius: 9px; padding: 10px 14px; font-size: 0.88rem; box-shadow: none; }
+    button:hover { box-shadow: none; }
+    .language-tools { align-items: center; }
+    .utility-btn { min-width: 38px; padding: 9px 11px; }
+    .result-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .result-actions button { font-size: 0.78rem; padding: 8px 11px; }
+    .dark-mode { --white: #103B37; --panel-strong: #103B37; --navy: #EFF8EE; --ink: #EFF8EE; --muted: #B7D2C1; --cyan: #164A42; --bg-1: #082B28; --bg-2: #082B28; --bg-3: #082B28; --line: rgba(230,245,247,0.15); --soft: rgba(90, 168, 50, 0.16); }
+    body.dark-mode { background: #082B28; }
+    .dark-mode .app { background: #0C3531; border-color: rgba(230,245,247,0.08); }
+    .dark-mode .home-hero { background: linear-gradient(135deg, #073b3a, #0a5c55 70%, #437f27); }
+    .dark-mode .home-actions button { color: #073b3a; }
+    .dark-mode .home-actions .secondary { color: white; }
+    .dark-mode .language-tools select, .dark-mode .teach-controls select { color: var(--ink); background: #17384d; }
+
+    @media (max-width: 980px) {
+      .nav {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 4px 0 2px;
+        scrollbar-width: thin;
+      }
+      .topbar { flex-wrap: wrap; }
+      .dashboard { grid-template-columns: 1fr; }
+      .overview-grid { grid-template-columns: 1fr; }
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        padding: 16px;
+      }
+      .app {
+        padding: 18px;
+      }
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .language-tools {
+        width: 100%;
+        max-width: 100%;
+        flex-wrap: wrap;
+      }
+      .page-heading { align-items: flex-start; flex-direction: column; }
+      .overview-grid, .intake-layout { grid-template-columns: 1fr; }
+      .home-hero, .feature-grid, .step-grid, .detail-grid, .care-path { grid-template-columns: 1fr; }
+      .care-path { gap: 1px; }
+      .care-path-item { min-height: 62px; }
+      .logo { width: 166px; height: 82px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-screen" id="loginScreen">
+    <form class="login-card" id="loginForm">
+      <img class="login-logo" src="/static/retinacare-logo.png" alt="RetinaCare logo" />
+      <h2 data-i18n="signIn">Sign in to RetinaCare</h2>
+      <p data-i18n="signInText">Use your email to access screening history and your personal care guide.</p>
+      <input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com" required />
+      <div class="button-row"><button type="submit" data-i18n="continue">Continue</button></div>
+      <div class="login-error" id="loginError"></div>
+    </form>
+  </div>
+  <div class="profile-screen hidden" id="profileScreen">
+    <form class="profile-card" id="profileForm">
+      <div class="profile-step"><span>1</span> Personal details</div>
+      <div class="eyebrow" data-i18n="profile">Personal profile</div>
+      <h2 data-i18n="profileTitle">Tell us about the person</h2>
+      <p data-i18n="profileText">These details help RetinaCare speak to the right person and organize their screening history.</p>
+      <div class="profile-email" id="profileEmail">Signed in</div>
+      <label for="nameInput">Full name</label>
+      <input id="nameInput" type="text" autocomplete="name" required />
+      <label for="dobInput">Date of birth</label>
+      <input id="dobInput" type="date" autocomplete="bday" required />
+      <div class="button-row"><button type="submit" data-i18n="openDashboard">Open dashboard</button><button type="button" class="secondary" id="profileVoiceBtn" data-i18n="guideMe">🔊 Guide me</button></div>
+      <p class="privacy-note">Stored locally for this development app. Do not use this version for real patient records.</p>
+      <div class="login-error" id="profileError"></div>
+    </form>
+  </div>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <img class="logo" src="/static/retinacare-logo.png" alt="RetinaCare logo" />
+        <div class="brand-text">
+          <h1>RetinaCare</h1>
+          <div class="brand-sub" data-i18n="brandSub">Diabetic Retinopathy Screening</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Main navigation">
+        <button type="button" data-scroll-target="homeSection" class="active">Home</button>
+        <button type="button" data-scroll-target="howItWorksSection">How it works</button>
+        <button type="button" data-scroll-target="detailsSection">Details</button>
+        <button type="button" data-scroll-target="aboutSection">About</button>
+      </nav>
+      <div class="language-tools">
+        <select id="dashboardLanguage" aria-label="Language"><option value="en">English</option><option value="hi">Hindi</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="ml">Malayalam</option><option value="kn">Kannada</option></select>
+        <button type="button" class="secondary" id="speakBtn" data-i18n="listen">🔊 Listen</button>
+        <button type="button" class="secondary" id="voiceControlBtn" aria-pressed="false">🎙 Voice control</button>
+        <button type="button" class="secondary utility-btn" id="themeToggle" aria-label="Switch colour theme" title="Switch colour theme">◐</button>
+        <button type="button" class="secondary" id="logoutBtn" data-i18n="signOut">Sign out</button>
+      </div>
+    </div>
+
+    <section class="home-hero" id="homeSection">
+      <div>
+        <div class="eyebrow" style="color: rgba(255,255,255,0.7);">RetinaCare home</div>
+        <h2>See the next step more clearly.</h2>
+        <p>Upload a retinal fundus image, check its quality, and receive a structured screening summary to discuss with an eye-care professional.</p>
+        <div class="home-actions">
+          <button type="button" data-scroll-target="workspaceSection">Start a screening</button>
+          <button type="button" class="secondary" id="homeVoiceGuideBtn">Hear voice commands</button>
+        </div>
+      </div>
+      <div class="home-stat" aria-label="Screening safeguards">
+        <strong>3 checks</strong>
+        <span>Image quality, screening result, and clinician follow-up guidance.</span>
+      </div>
+    </section>
+
+    <section class="care-path" aria-label="RetinaCare screening pathway">
+      <div class="care-path-item"><div class="care-path-icon">01</div><div><strong>Capture</strong><span>Add a retinal image</span></div></div>
+      <div class="care-path-item"><div class="care-path-icon">02</div><div><strong>Check</strong><span>Confirm image quality</span></div></div>
+      <div class="care-path-item"><div class="care-path-icon">03</div><div><strong>Review</strong><span>Understand the summary</span></div></div>
+      <div class="care-path-item"><div class="care-path-icon">04</div><div><strong>Follow up</strong><span>Talk with a clinician</span></div></div>
+    </section>
+
+    <section class="feature-grid" aria-label="RetinaCare features">
+      <article class="feature-card"><div class="feature-icon">◉</div><h3>Quality first</h3><p>Focus, contrast, field of view, and signal checks prevent interpretation of poor images.</p></article>
+      <article class="feature-card"><div class="feature-icon">✦</div><h3>Safer confidence review</h3><p>The result now highlights when a prediction needs especially careful clinician confirmation.</p></article>
+      <article class="feature-card"><div class="feature-icon">◌</div><h3>Voice assisted</h3><p>Hear results aloud or use simple voice commands to move through the screening workflow.</p></article>
+    </section>
+
+    <section class="box how-section" id="howItWorksSection">
+      <div class="eyebrow">How it works</div>
+      <h3>Three simple steps for a clearer screening workflow.</h3>
+      <div class="step-grid">
+        <article class="step-card"><span class="step-number">01</span><h3>Add a retinal image</h3><p>Upload a fundus image or capture one with an approved retinal camera. A normal webcam photo is not suitable for clinical screening.</p></article>
+        <article class="step-card"><span class="step-number">02</span><h3>Check image quality</h3><p>RetinaCare checks focus, contrast, field of view, and signal before it provides an automated screening estimate.</p></article>
+        <article class="step-card"><span class="step-number">03</span><h3>Review and follow up</h3><p>Listen to or download the summary, then discuss every result with an eye-care professional.</p></article>
+      </div>
+    </section>
+
+    <section class="box details-section" id="detailsSection">
+      <div class="eyebrow">Screening details</div>
+      <h3>Designed around safe, practical next steps.</h3>
+      <div class="detail-grid">
+        <article class="detail-card"><h3>Voice-assisted review</h3><p>Use Listen for read-aloud results or Voice control for commands such as “read result,” “guide me,” and “run screening.”</p></article>
+        <article class="detail-card"><h3>Private local history</h3><p>Screening history is stored in the local development database, and summaries can be downloaded directly from the browser.</p></article>
+        <article class="detail-card"><h3>Quality safeguards</h3><p>Ungradable images are labelled for retake rather than being used to produce a disease-severity result.</p></article>
+        <article class="detail-card"><h3>When to seek urgent care</h3><p>Seek immediate eye care for sudden vision loss, a curtain or shadow, new flashes or floaters, or severe eye pain.</p></article>
+      </div>
+    </section>
+
+    <div class="page-heading" id="workspaceSection">
+      <div>
+        <div class="eyebrow" data-i18n="workspace">Clinical workspace</div>
+        <h2 data-i18n="overview">Health Overview</h2>
+        <p data-i18n="overviewText">Screen retinal images, review risk signals, and prepare the next clinical conversation.</p>
+      </div>
+      <div class="date-chip" data-i18n="today">Today · 26 Aug 2026</div>
+    </div>
+
+    <div class="overview-grid">
+      <main class="main-column">
+        <section class="box intake-card">
+          <div class="section-heading"><div><div class="eyebrow" data-i18n="aiScreening">AI-assisted screening</div><h3 data-i18n="newReview">New retinal review</h3></div><div class="live-dot" data-i18n="live">● Live</div></div>
+          <div class="intake-layout">
+            <div class="intake-actions">
+              <label class="upload-label" for="fileInput"><span class="upload-symbol">↑</span><strong data-i18n="chooseImage">Choose retinal image</strong><small data-i18n="formats">JPG, PNG or DICOM</small></label>
+              <input id="fileInput" type="file" accept="image/*,.dcm" />
+              <div class="button-row"><button id="submitBtn" data-i18n="run">Run screening</button><button id="cameraBtn" class="secondary" data-i18n="camera">Use camera</button></div>
+              <div class="status" id="statusText" role="status" aria-live="polite">No image selected.</div>
+              <div class="button-row"><button id="captureBtn" class="secondary" style="display:none;" data-i18n="capture">Capture photo</button></div>
+            </div>
+            <div class="preview"><video id="cameraVideo" autoplay playsinline muted></video><img id="previewImage" alt="Retinal image preview" /></div>
+          </div>
+        </section>
+
+        <section class="box result-panel">
+          <div class="result-header"><div><div class="eyebrow" data-i18n="caseReview">Case review</div><h3 data-i18n="interpretation">Screening interpretation</h3></div><div class="status-pill" data-i18n="screeningOnly">Screening only</div></div>
+          <div class="result" id="resultBox" role="status" aria-live="polite"><span class="label" data-i18n="status">Status</span><br/><span data-i18n="waiting">Waiting for an image...</span></div>
+          <div class="model-insight" id="modelInsight">Model readiness will appear after a screening.</div>
+          <div class="result-actions"><button id="downloadReportBtn" type="button" class="secondary">Download summary</button><button id="clearResultBtn" type="button" class="secondary">Clear result</button><button id="forceRerunBtn" type="button" class="secondary" title="Re-run screening on this image (bypass cache)">Re-run</button></div>
+          <div class="teach-panel">
+            <p>Help improve future training by adding a clinician-confirmed label for this image.</p>
+            <div class="teach-controls"><select id="confirmedGrade" aria-label="Confirmed DR grade"><option value="">Select confirmed grade</option><option value="0">0 - No DR</option><option value="1">1 - Mild NPDR</option><option value="2">2 - Moderate NPDR</option><option value="3">3 - Severe NPDR</option><option value="4">4 - PDR</option></select><button id="teachBtn" type="button" class="secondary">Save label</button></div>
+            <div class="teach-status" id="teachStatus"></div>
+          </div>
+        </section>
+
+        <section class="box guide-card">
+          <div class="section-heading"><div><div class="eyebrow" data-i18n="personalGuide">Personal AI guide</div><h3 data-i18n="screeningHistory">Your screening history</h3></div><button id="guideBtn" type="button" class="secondary" data-i18n="guideMePlain">Guide me</button></div>
+          <div class="guide-content" id="guideBox">Sign in and complete the profile to receive a personal guide.</div>
+        </section>
+
+        <section class="box about-section" id="aboutSection">
+          <div class="eyebrow">About RetinaCare</div>
+          <h3>Built to support screening, not replace clinical care.</h3>
+          <p>RetinaCare is a local development tool for retinal-image quality checks and diabetic-retinopathy screening experiments. It can use a labeled PyTorch checkpoint when one has been trained; otherwise it clearly identifies the interpretable development baseline. A clinician must confirm every result and decide on care.</p>
+        </section>
+
+        <section class="box history-card">
+          <div class="section-heading"><div><div class="eyebrow" data-i18n="storedLocally">Stored locally</div><h3 data-i18n="recentUploads">Recent uploads</h3></div></div>
+          <div class="history-table-wrap">
+            <table class="history-table">
+              <thead><tr><th data-i18n="image">Image</th><th data-i18n="time">Time</th><th data-i18n="result">Result</th><th data-i18n="confidence">Confidence</th><th data-i18n="quality">Quality</th></tr></thead>
+              <tbody id="historyBody"><tr><td colspan="5">No uploads saved yet.</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
+    </div>
+  </div>
+
+  <script>
+    const apiBase = window.RETINACARE_API_URL || '';
+    const apiFetch = (path, options = {}) => fetch(`${apiBase}${path}`, options);
+
+    const fileInput = document.getElementById('fileInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const cameraBtn = document.getElementById('cameraBtn');
+    const captureBtn = document.getElementById('captureBtn');
+    const statusText = document.getElementById('statusText');
+    const resultBox = document.getElementById('resultBox');
+    const previewImage = document.getElementById('previewImage');
+    const cameraVideo = document.getElementById('cameraVideo');
+    const historyBody = document.getElementById('historyBody');
+    const loginScreen = document.getElementById('loginScreen');
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('emailInput');
+    const loginError = document.getElementById('loginError');
+    const profileScreen = document.getElementById('profileScreen');
+    const profileForm = document.getElementById('profileForm');
+    const nameInput = document.getElementById('nameInput');
+    const dobInput = document.getElementById('dobInput');
+    const profileEmail = document.getElementById('profileEmail');
+    const profileError = document.getElementById('profileError');
+    const dashboardLanguage = document.getElementById('dashboardLanguage');
+    const guideBox = document.getElementById('guideBox');
+    const guideBtn = document.getElementById('guideBtn');
+    const confirmedGrade = document.getElementById('confirmedGrade');
+    const teachBtn = document.getElementById('teachBtn');
+    const teachStatus = document.getElementById('teachStatus');
+    const modelInsight = document.getElementById('modelInsight');
+    const voiceControlBtn = document.getElementById('voiceControlBtn');
+    const themeToggle = document.getElementById('themeToggle');
+    const forceRerunBtn = document.getElementById('forceRerunBtn');
+
+    let selectedFile = null;
+    let stream = null;
+    let currentLanguage = 'en';
+    let currentUpload = { filename: '', image_hash: '' };
+    let activeSpeechButton = null;
+    let speechRequestId = 0;
+    let speechRecognition = null;
+    let isListeningForCommand = false;
+
+    const translations = {
+      en: { signIn: 'Sign in to RetinaCare', signInText: 'Use your email to access screening history and your personal care guide.', continue: 'Continue', guideFor: 'PERSONAL GUIDE FOR', profile: 'Personal profile', profileTitle: 'Tell us about the person', profileText: 'These details help RetinaCare speak to the right person and organize their screening history.', openDashboard: 'Open dashboard', guideMe: '🔊 Guide me', brandSub: 'Diabetic Retinopathy Screening', listen: '🔊 Listen', signOut: 'Sign out', workspace: 'Clinical workspace', overview: 'Health Overview', overviewText: 'Screen retinal images, review risk signals, and prepare the next clinical conversation.', today: 'Today · 26 Aug 2026', aiScreening: 'AI-assisted screening', newReview: 'New retinal review', live: '● Live', chooseImage: 'Choose retinal image', formats: 'JPG, PNG or DICOM', run: 'Run screening', camera: 'Use camera', capture: 'Capture photo', caseReview: 'Case review', interpretation: 'Screening interpretation', screeningOnly: 'Screening only', status: 'Status', waiting: 'Waiting for an image...', personalGuide: 'Personal AI guide', screeningHistory: 'Your screening history', guideMePlain: 'Guide me', storedLocally: 'Stored locally', recentUploads: 'Recent uploads', image: 'Image', time: 'Time', result: 'Result', confidence: 'Confidence', quality: 'Quality' },
+      hi: { signIn: 'RetinaCare में साइन इन करें', signInText: 'स्क्रीनिंग इतिहास और व्यक्तिगत देखभाल मार्गदर्शिका के लिए अपना ईमेल इस्तेमाल करें।', continue: 'जारी रखें', guideFor: 'व्यक्तिगत मार्गदर्शिका:', profile: 'व्यक्तिगत प्रोफ़ाइल', profileTitle: 'व्यक्ति के बारे में बताएँ', profileText: 'ये विवरण स्क्रीनिंग इतिहास व्यवस्थित करने में मदद करते हैं।', openDashboard: 'डैशबोर्ड खोलें', guideMe: '🔊 मार्गदर्शन', brandSub: 'डायबिटिक रेटिनोपैथी स्क्रीनिंग', listen: '🔊 सुनें', signOut: 'साइन आउट', workspace: 'क्लिनिकल कार्यक्षेत्र', overview: 'स्वास्थ्य अवलोकन', overviewText: 'रेटिना चित्रों की जाँच करें और जोखिम संकेत देखें।', today: 'आज · 26 अगस्त 2026', aiScreening: 'AI स्क्रीनिंग', newReview: 'नई रेटिना जाँच', live: '● लाइव', chooseImage: 'रेटिना चित्र चुनें', formats: 'JPG, PNG या DICOM', run: 'स्क्रीनिंग चलाएँ', camera: 'कैमरा इस्तेमाल करें', capture: 'फोटो लें', caseReview: 'केस समीक्षा', interpretation: 'स्क्रीनिंग व्याख्या', screeningOnly: 'केवल स्क्रीनिंग', status: 'स्थिति', waiting: 'चित्र की प्रतीक्षा है...', personalGuide: 'व्यक्तिगत AI मार्गदर्शक', screeningHistory: 'आपका स्क्रीनिंग इतिहास', guideMePlain: 'मार्गदर्शन', storedLocally: 'स्थानीय रूप से संग्रहित', recentUploads: 'हाल के अपलोड', image: 'चित्र', time: 'समय', result: 'नतीजा', confidence: 'विश्वास', quality: 'गुणवत्ता' },
+      ta: { signIn: 'RetinaCare இல் உள்நுழைக', signInText: 'திரையிடல் வரலாறு மற்றும் தனிப்பட்ட வழிகாட்டியை அணுக உங்கள் மின்னஞ்சலைப் பயன்படுத்துங்கள்.', continue: 'தொடரவும்', profile: 'தனிப்பட்ட சுயவிவரம்', profileTitle: 'நபரைப் பற்றி கூறுங்கள்', profileText: 'இந்த விவரங்கள் திரையிடல் வரலாற்றை ஒழுங்குபடுத்த உதவும்.', openDashboard: 'டாஷ்போர்டைத் திறக்கவும்', guideMe: '🔊 வழிகாட்டி', brandSub: 'நீரிழிவு விழித்திரை திரையிடல்', listen: '🔊 கேளுங்கள்', signOut: 'வெளியேறு', workspace: 'மருத்துவ பணியிடம்', overview: 'சுகாதார கண்ணோட்டம்', overviewText: 'விழித்திரை படங்களைச் சரிபார்த்து ஆபத்து அறிகுறிகளைப் பாருங்கள்.', today: 'இன்று · 26 ஆகஸ்ட் 2026', aiScreening: 'AI திரையிடல்', newReview: 'புதிய விழித்திரை மதிப்பாய்வு', live: '● நேரலை', chooseImage: 'விழித்திரை படத்தைத் தேர்ந்தெடுக்கவும்', formats: 'JPG, PNG அல்லது DICOM', run: 'திரையிடலை இயக்கவும்', camera: 'கேமராவைப் பயன்படுத்தவும்', capture: 'புகைப்படம் எடுக்கவும்', caseReview: 'வழக்கு மதிப்பாய்வு', interpretation: 'திரையிடல் விளக்கம்', screeningOnly: 'திரையிடல் மட்டும்', status: 'நிலை', waiting: 'படத்திற்காக காத்திருக்கிறது...', personalGuide: 'தனிப்பட்ட AI வழிகாட்டி', screeningHistory: 'உங்கள் திரையிடல் வரலாறு', guideMePlain: 'வழிகாட்டவும்', storedLocally: 'உள்ளூரில் சேமிக்கப்பட்டது', recentUploads: 'சமீபத்திய பதிவேற்றங்கள்', image: 'படம்', time: 'நேரம்', result: 'முடிவு', confidence: 'நம்பிக்கை', quality: 'தரம்' },
+      te: { signIn: 'RetinaCare లో సైన్ ఇన్ చేయండి', signInText: 'స్క్రీనింగ్ చరిత్ర మరియు వ్యక్తిగత మార్గదర్శిని కోసం మీ ఇమెయిల్ ఉపయోగించండి.', continue: 'కొనసాగించండి', profile: 'వ్యక్తిగత ప్రొఫైల్', profileTitle: 'వ్యక్తి వివరాలు చెప్పండి', profileText: 'ఈ వివరాలు స్క్రీనింగ్ చరిత్రను నిర్వహించడంలో సహాయపడతాయి.', openDashboard: 'డాష్‌బోర్డ్ తెరవండి', guideMe: '🔊 మార్గదర్శకం', brandSub: 'డయాబెటిక్ రెటినోపతి స్క్రీనింగ్', listen: '🔊 వినండి', signOut: 'సైన్ అవుట్', workspace: 'క్లినికల్ వర్క్‌స్పేస్', overview: 'ఆరోగ్య అవలోకనం', overviewText: 'రెటీనా చిత్రాలను పరిశీలించి ప్రమాద సంకేతాలను చూడండి.', today: 'ఈరోజు · 26 ఆగస్టు 2026', aiScreening: 'AI స్క్రీనింగ్', newReview: 'కొత్త రెటీనా సమీక్ష', live: '● ప్రత్యక్షం', chooseImage: 'రెటీనా చిత్రాన్ని ఎంచుకోండి', formats: 'JPG, PNG లేదా DICOM', run: 'స్క్రీనింగ్ ప్రారంభించండి', camera: 'కెమెరాను ఉపయోగించండి', capture: 'ఫోటో తీయండి', caseReview: 'కేసు సమీక్ష', interpretation: 'స్క్రీనింగ్ వివరణ', screeningOnly: 'స్క్రీనింగ్ మాత్రమే', status: 'స్థితి', waiting: 'చిత్రం కోసం వేచి ఉంది...', personalGuide: 'వ్యక్తిగత AI మార్గదర్శి', screeningHistory: 'మీ స్క్రీనింగ్ చరిత్ర', guideMePlain: 'మార్గనిర్దేశం', storedLocally: 'స్థానికంగా నిల్వ', recentUploads: 'ఇటీవలి అప్‌లోడ్‌లు', image: 'చిత్రం', time: 'సమయం', result: 'ఫలితం', confidence: 'నమ్మకం', quality: 'నాణ్యత' },
+      ml: { signIn: 'RetinaCare-ലേക്ക് സൈൻ ഇൻ ചെയ്യുക', signInText: 'സ്ക്രീനിംഗ് ചരിത്രവും വ്യക്തിഗത മാർഗ്ഗനിർദ്ദേശവും ലഭിക്കാൻ ഇമെയിൽ ഉപയോഗിക്കുക.', continue: 'തുടരുക', profile: 'വ്യക്തിഗത പ്രൊഫൈൽ', profileTitle: 'വ്യക്തിയെക്കുറിച്ച് പറയുക', profileText: 'സ്ക്രീനിംഗ് ചരിത്രം ക്രമീകരിക്കാൻ ഈ വിവരങ്ങൾ സഹായിക്കും.', openDashboard: 'ഡാഷ്ബോർഡ് തുറക്കുക', guideMe: '🔊 മാർഗ്ഗനിർദ്ദേശം', brandSub: 'ഡയബറ്റിക് റെറ്റിനോപ്പതി സ്ക്രീനിംഗ്', listen: '🔊 കേൾക്കുക', signOut: 'സൈൻ ഔട്ട്', workspace: 'ക്ലിനിക്കൽ വർക്ക്‌സ്‌പേസ്', overview: 'ആരോഗ്യ അവലോകനം', overviewText: 'റെറ്റിന ചിത്രങ്ങൾ പരിശോധിച്ച് അപകട സൂചനകൾ കാണുക.', today: 'ഇന്ന് · 26 ഓഗസ്റ്റ് 2026', aiScreening: 'AI സ്ക്രീനിംഗ്', newReview: 'പുതിയ റെറ്റിന പരിശോധന', live: '● ലൈവ്', chooseImage: 'റെറ്റിന ചിത്രം തിരഞ്ഞെടുക്കുക', formats: 'JPG, PNG അല്ലെങ്കിൽ DICOM', run: 'സ്ക്രീനിംഗ് നടത്തുക', camera: 'ക്യാമറ ഉപയോഗിക്കുക', capture: 'ഫോട്ടോ എടുക്കുക', caseReview: 'കേസ് അവലോകനം', interpretation: 'സ്ക്രീനിംഗ് വിശദീകരണം', screeningOnly: 'സ്ക്രീനിംഗ് മാത്രം', status: 'നില', waiting: 'ചിത്രത്തിനായി കാത്തിരിക്കുന്നു...', personalGuide: 'വ്യക്തിഗത AI ഗൈഡ്', screeningHistory: 'നിങ്ങളുടെ സ്ക്രീനിംഗ് ചരിത്രം', guideMePlain: 'ഗൈഡ് ചെയ്യുക', storedLocally: 'പ്രാദേശികമായി സംഭരിച്ചത്', recentUploads: 'സമീപകാല അപ്‌ലോഡുകൾ', image: 'ചിത്രം', time: 'സമയം', result: 'ഫലം', confidence: 'വിശ്വാസം', quality: 'ഗുണനിലവാരം' },
+      kn: { signIn: 'RetinaCare ಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ', signInText: 'ಸ್ಕ್ರೀನಿಂಗ್ ಇತಿಹಾಸ ಮತ್ತು ವೈಯಕ್ತಿಕ ಮಾರ್ಗದರ್ಶಿಗಾಗಿ ನಿಮ್ಮ ಇಮೇಲ್ ಬಳಸಿ.', continue: 'ಮುಂದುವರಿಸಿ', profile: 'ವೈಯಕ್ತಿಕ ಪ್ರೊಫೈಲ್', profileTitle: 'ವ್ಯಕ್ತಿಯ ವಿವರಗಳನ್ನು ನೀಡಿ', profileText: 'ಸ್ಕ್ರೀನಿಂಗ್ ಇತಿಹಾಸವನ್ನು ವ್ಯವಸ್ಥೆಗೊಳಿಸಲು ಈ ವಿವರಗಳು ಸಹಾಯ ಮಾಡುತ್ತವೆ.', openDashboard: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ತೆರೆಯಿರಿ', guideMe: '🔊 ಮಾರ್ಗದರ್ಶನ', brandSub: 'ಡಯಾಬಿಟಿಕ್ ರೆಟಿನೋಪತಿ ಸ್ಕ್ರೀನಿಂಗ್', listen: '🔊 ಕೇಳಿ', signOut: 'ಸೈನ್ ಔಟ್', workspace: 'ಕ್ಲಿನಿಕಲ್ ಕಾರ್ಯಕ್ಷೇತ್ರ', overview: 'ಆರೋಗ್ಯ ಅವಲೋಕನ', overviewText: 'ರೆಟಿನಾ ಚಿತ್ರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಅಪಾಯದ ಸಂಕೇತಗಳನ್ನು ನೋಡಿ.', today: 'ಇಂದು · 26 ಆಗಸ್ಟ್ 2026', aiScreening: 'AI ಸ್ಕ್ರೀನಿಂಗ್', newReview: 'ಹೊಸ ರೆಟಿನಾ ಪರಿಶೀಲನೆ', live: '● ಲೈವ್', chooseImage: 'ರೆಟಿನಾ ಚಿತ್ರ ಆಯ್ಕೆಮಾಡಿ', formats: 'JPG, PNG ಅಥವಾ DICOM', run: 'ಸ್ಕ್ರೀನಿಂಗ್ ನಡೆಸಿ', camera: 'ಕ್ಯಾಮೆರಾ ಬಳಸಿ', capture: 'ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ', caseReview: 'ಕೇಸ್ ಪರಿಶೀಲನೆ', interpretation: 'ಸ್ಕ್ರೀನಿಂಗ್ ವಿವರಣೆ', screeningOnly: 'ಸ್ಕ್ರೀನಿಂಗ್ ಮಾತ್ರ', status: 'ಸ್ಥಿತಿ', waiting: 'ಚಿತ್ರಕ್ಕಾಗಿ ಕಾಯುತ್ತಿದೆ...', personalGuide: 'ವೈಯಕ್ತಿಕ AI ಮಾರ್ಗದರ್ಶಿ', screeningHistory: 'ನಿಮ್ಮ ಸ್ಕ್ರೀನಿಂಗ್ ಇತಿಹಾಸ', guideMePlain: 'ಮಾರ್ಗದರ್ಶನ', storedLocally: 'ಸ್ಥಳೀಯವಾಗಿ ಸಂಗ್ರಹಿಸಲಾಗಿದೆ', recentUploads: 'ಇತ್ತೀಚಿನ ಅಪ್‌ಲೋಡ್‌ಗಳು', image: 'ಚಿತ್ರ', time: 'ಸಮಯ', result: 'ಫಲಿತಾಂಶ', confidence: 'ವಿಶ್ವಾಸ', quality: 'ಗುಣಮಟ್ಟ' }
+    };
+
+    const speechLanguages = { en: 'en-IN', hi: 'hi-IN', ta: 'ta-IN', te: 'te-IN', ml: 'ml-IN', kn: 'kn-IN' };
+    const guideHeadings = { en: 'PERSONAL GUIDE FOR', hi: 'व्यक्तिगत मार्गदर्शिका:', ta: 'தனிப்பட்ட வழிகாட்டி:', te: 'వ్యక్తిగత మార్గదర్శి:', ml: 'വ്യക്തിഗത ഗൈഡ്:', kn: 'ವೈಯಕ್ತಿಕ ಮಾರ್ಗದರ್ಶಿ:' };
+
+    function setLanguage(language) {
+      currentLanguage = language;
+      const text = translations[language] || translations.en;
+      Object.keys(text).forEach((key) => {
+        document.querySelectorAll(`[data-i18n="${key}"]`).forEach((element) => { element.textContent = text[key]; });
+      });
+      dashboardLanguage.value = language;
+    }
+
+    function setSpeechFeedback(message) {
+      statusText.textContent = message;
+    }
+
+    function setTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.classList.toggle('dark-mode', dark);
+      themeToggle.textContent = dark ? '☀' : '◐';
+      themeToggle.setAttribute('aria-label', dark ? 'Use light theme' : 'Use dark theme');
+      localStorage.setItem('retinacare-theme', dark ? 'dark' : 'light');
+    }
+
+    function clearSpeechState() {
+      if (activeSpeechButton) activeSpeechButton.classList.remove('is-speaking');
+      activeSpeechButton = null;
+    }
+
+    function findVoice(language) {
+      const languagePrefix = language.split('-')[0].toLowerCase();
+      const voices = window.speechSynthesis.getVoices();
+      return voices.find((voice) => voice.lang.toLowerCase() === language.toLowerCase())
+        || voices.find((voice) => voice.lang.toLowerCase().startsWith(`${languagePrefix}-`))
+        || voices.find((voice) => voice.default)
+        || voices[0];
+    }
+
+    function speak(text, button) {
+      if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        setSpeechFeedback('Voice playback is not supported by this browser. Try the latest Chrome, Edge, or Safari.');
+        return;
+      }
+
+      const message = String(text || '').replace(/\s+/g, ' ').trim();
+      if (!message) {
+        setSpeechFeedback('There is nothing to read aloud yet.');
+        return;
+      }
+
+      const requestId = ++speechRequestId;
+      window.speechSynthesis.cancel();
+      clearSpeechState();
+      activeSpeechButton = button || null;
+      if (activeSpeechButton) activeSpeechButton.classList.add('is-speaking');
+
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = speechLanguages[currentLanguage] || 'en-IN';
+      const voice = findVoice(utterance.lang);
+      if (voice) utterance.voice = voice;
+      utterance.rate = 0.95;
+      utterance.onstart = () => {
+        if (requestId === speechRequestId) setSpeechFeedback('Voice playback is on. Select a voice button again to restart.');
+      };
+      utterance.onend = () => {
+        if (requestId !== speechRequestId) return;
+        clearSpeechState();
+        setSpeechFeedback('Voice playback finished.');
+      };
+      utterance.onerror = (event) => {
+        if (requestId !== speechRequestId) return;
+        clearSpeechState();
+        if (event.error === 'canceled' || event.error === 'interrupted') return;
+        setSpeechFeedback(`Voice playback could not start (${event.error || 'unknown error'}). Check your browser sound and installed voices.`);
+      };
+      window.speechSynthesis.speak(utterance);
+
+      // Chromium can leave speech paused after a tab or device change.
+      window.setTimeout(() => {
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+      }, 100);
+    }
+
+    window.speechSynthesis?.addEventListener?.('voiceschanged', () => {
+      // Loading voices lazily is normal in Chromium-based browsers; findVoice reads them at playback time.
+    });
+
+    function scrollToSection(sectionId) {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.nav button').forEach((button) => button.classList.toggle('active', button.dataset.scrollTarget === sectionId));
+    }
+
+    function voiceCommandHelp() {
+      return 'Voice control is ready. You can say: listen or read result, guide me, use camera, capture photo, run screening, home, about, or stop.';
+    }
+
+    function stopVoiceControl() {
+      isListeningForCommand = false;
+      voiceControlBtn.classList.remove('is-listening');
+      voiceControlBtn.setAttribute('aria-pressed', 'false');
+      if (speechRecognition) speechRecognition.stop();
+    }
+
+    function executeVoiceCommand(transcript) {
+      const command = transcript.toLowerCase().trim();
+      if (/^(stop|cancel|stop listening)/.test(command)) {
+        window.speechSynthesis.cancel();
+        stopVoiceControl();
+        setSpeechFeedback('Voice control stopped.');
+      } else if (/(help|commands|what can i say)/.test(command)) {
+        speak(voiceCommandHelp(), voiceControlBtn);
+      } else if (/(listen|read).*(result|screening)|^(listen|read)$/.test(command)) {
+        speak(resultBox.textContent, document.getElementById('speakBtn'));
+      } else if (/(guide|history)/.test(command)) {
+        speak(guideBox.textContent, guideBtn);
+      } else if (/(use |open )?camera/.test(command)) {
+        cameraBtn.click();
+      } else if (/(capture|take).*(photo|picture)|^capture$/.test(command)) {
+        captureBtn.click();
+      } else if (/(run|start).*(screening|model)|^screening$/.test(command)) {
+        submitBtn.click();
+      } else if (/home/.test(command)) {
+        scrollToSection('homeSection');
+      } else if (/(how it works|how does it work|steps)/.test(command)) {
+        scrollToSection('howItWorksSection');
+      } else if (/(details|features)/.test(command)) {
+        scrollToSection('detailsSection');
+      } else if (/about/.test(command)) {
+        scrollToSection('aboutSection');
+      } else if (/(sign out|log out|logout)/.test(command)) {
+        document.getElementById('logoutBtn').click();
+      } else {
+        setSpeechFeedback(`I heard "${transcript}". Say "help" to hear the available commands.`);
+      }
+    }
+
+    function startVoiceControl() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        setSpeechFeedback('Voice commands need the latest Chrome or Edge. Voice playback is still available with Listen.');
+        return;
+      }
+      if (!speechRecognition) {
+        speechRecognition = new SpeechRecognition();
+        speechRecognition.continuous = false;
+        speechRecognition.interimResults = false;
+        speechRecognition.maxAlternatives = 1;
+        speechRecognition.onresult = (event) => executeVoiceCommand(event.results[0][0].transcript);
+        speechRecognition.onerror = (event) => {
+          if (event.error !== 'aborted') setSpeechFeedback(`Voice control could not hear you (${event.error}). Allow microphone access and try again.`);
+        };
+        speechRecognition.onend = () => {
+          isListeningForCommand = false;
+          voiceControlBtn.classList.remove('is-listening');
+          voiceControlBtn.setAttribute('aria-pressed', 'false');
+        };
+      }
+      if (isListeningForCommand) { stopVoiceControl(); return; }
+      speechRecognition.lang = speechLanguages[currentLanguage] || 'en-IN';
+      isListeningForCommand = true;
+      voiceControlBtn.classList.add('is-listening');
+      voiceControlBtn.setAttribute('aria-pressed', 'true');
+      setSpeechFeedback('Listening for one command. Say help to hear available commands.');
+      try { speechRecognition.start(); } catch (error) { stopVoiceControl(); }
+    }
+
+    async function checkLogin() {
+      const response = await apiFetch('/me');
+      const data = await response.json();
+      if (data.email) {
+        emailInput.value = data.email;
+        profileEmail.textContent = `Signed in as ${data.email}`;
+        loginScreen.classList.add('hidden');
+        if (data.profile) {
+          profileScreen.classList.add('hidden');
+          loadHistory();
+          loadGuide();
+        } else {
+          profileScreen.classList.remove('hidden');
+        }
+      }
+    }
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      loginError.textContent = '';
+      const response = await apiFetch('/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: emailInput.value }) });
+      const data = await response.json();
+      if (!response.ok) { loginError.textContent = data.error || 'Sign in failed.'; return; }
+      profileEmail.textContent = `Signed in as ${data.email}`;
+      loginScreen.classList.add('hidden');
+      profileScreen.classList.remove('hidden');
+      nameInput.focus();
+    });
+
+    profileForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      profileError.textContent = '';
+      const response = await apiFetch('/profile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ full_name: nameInput.value, date_of_birth: dobInput.value }) });
+      const data = await response.json();
+      if (!response.ok) { profileError.textContent = data.error || 'Could not save profile.'; return; }
+      profileScreen.classList.add('hidden');
+      loadHistory();
+      loadGuide();
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await apiFetch('/logout', { method: 'POST' });
+      loginScreen.classList.remove('hidden');
+      profileScreen.classList.add('hidden');
+      emailInput.focus();
+    });
+
+    dashboardLanguage.addEventListener('change', async (event) => { setLanguage(event.target.value); await loadGuide(); });
+    document.getElementById('speakBtn').addEventListener('click', (event) => speak(resultBox.textContent, event.currentTarget));
+    document.getElementById('profileVoiceBtn').addEventListener('click', (event) => speak('Step 1. Enter the person\'s full name. Step 2. Enter the date of birth. Step 3. Press Open dashboard. Your information is stored locally in this development app.', event.currentTarget));
+    voiceControlBtn.addEventListener('click', startVoiceControl);
+    document.getElementById('homeVoiceGuideBtn').addEventListener('click', (event) => speak(voiceCommandHelp(), event.currentTarget));
+    themeToggle.addEventListener('click', () => setTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark'));
+    document.getElementById('downloadReportBtn').addEventListener('click', () => {
+      const report = resultBox.textContent.trim();
+      if (!report || /Waiting for an image/i.test(report)) { setSpeechFeedback('Run a screening before downloading a summary.'); return; }
+      const blob = new Blob([`RetinaCare screening summary\nGenerated: ${new Date().toLocaleString()}\n\n${report}\n\n${modelInsight.textContent.trim()}\n`], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'retinacare-screening-summary.txt';
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(link.href), 0);
+      setSpeechFeedback('Screening summary downloaded.');
+    });
+    document.getElementById('clearResultBtn').addEventListener('click', () => {
+      resultBox.textContent = 'Waiting for an image...';
+      modelInsight.textContent = 'Model readiness will appear after a screening.';
+      currentUpload = { filename: '', image_hash: '' };
+      teachStatus.textContent = '';
+      setSpeechFeedback('Screening result cleared.');
+    });
+    document.querySelectorAll('[data-scroll-target]').forEach((button) => {
+      button.addEventListener('click', () => scrollToSection(button.dataset.scrollTarget));
+    });
+
+    function renderHistory(uploads) {
+      if (!uploads.length) {
+        historyBody.innerHTML = '<tr><td colspan="5">No uploads saved yet.</td></tr>';
+        return;
+      }
+      historyBody.innerHTML = uploads.map((upload) => {
+        const time = new Date(upload.uploaded_at).toLocaleString();
+        const confidence = `${Math.round((upload.confidence || 0) * 100)}%`;
+        const quality = upload.quality_passed ? 'Passed' : 'Needs review';
+        return `<tr><td>${upload.filename}</td><td>${time}</td><td class="history-status">${upload.screening_result}</td><td>${confidence}</td><td>${quality}</td></tr>`;
+      }).join('');
+    }
+
+    async function loadHistory() {
+      try {
+        const response = await apiFetch('/history');
+        const data = await response.json();
+        renderHistory(data.uploads || []);
+      } catch (error) {
+        historyBody.innerHTML = '<tr><td colspan="5">History is temporarily unavailable.</td></tr>';
+      }
+    }
+
+    async function loadGuide() {
+      try {
+        const response = await apiFetch(`/personal-guide?language=${encodeURIComponent(currentLanguage)}`);
+        const data = await response.json();
+        const guide = data.guide || 'No guide available yet.';
+        const localizedGuide = guide.replace(/^PERSONAL GUIDE FOR/, guideHeadings[currentLanguage] || guideHeadings.en);
+        guideBox.textContent = localizedGuide;
+        return localizedGuide;
+      } catch (error) {
+        guideBox.textContent = 'Personal guide is temporarily unavailable.';
+        return guideBox.textContent;
+      }
+    }
+
+    guideBtn.addEventListener('click', (event) => {
+      // Speak the already-rendered guide immediately, preserving the button's user gesture.
+      // Refreshing the guide remains available when the language changes.
+      speak(guideBox.textContent, event.currentTarget);
+    });
+    teachBtn.addEventListener('click', async () => {
+      if (!currentUpload.filename || !currentUpload.image_hash) { teachStatus.textContent = 'Run screening on an image first.'; return; }
+      if (confirmedGrade.value === '') { teachStatus.textContent = 'Choose the confirmed grade first.'; return; }
+      const response = await apiFetch('/teach-model', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...currentUpload, corrected_grade: Number(confirmedGrade.value) }) });
+      const data = await response.json();
+      teachStatus.textContent = data.message || data.error || 'Label could not be saved.';
+    });
+    setTheme(localStorage.getItem('retinacare-theme') || 'light');
+    setLanguage('en');
+    checkLogin();
+
+    fileInput.addEventListener('change', (event) => {
+      selectedFile = event.target.files[0];
+      if (selectedFile) {
+        statusText.textContent = `Selected: ${selectedFile.name}`;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+          previewImage.style.display = 'block';
+          cameraVideo.style.display = 'none';
+        };
+        reader.readAsDataURL(selectedFile);
+      }
+    });
+
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        cameraVideo.srcObject = stream;
+        cameraVideo.style.display = 'block';
+        previewImage.style.display = 'none';
+        captureBtn.style.display = 'inline-block';
+        statusText.textContent = 'Camera ready. Capture a photo when ready.';
+      } catch (err) {
+        statusText.textContent = 'Camera not available: ' + err.message;
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+      cameraVideo.srcObject = null;
+      cameraVideo.style.display = 'none';
+      captureBtn.style.display = 'none';
+    }
+
+    cameraBtn.addEventListener('click', async () => {
+      await startCamera();
+    });
+
+    captureBtn.addEventListener('click', () => {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = cameraVideo.videoWidth || 640;
+      canvas.height = cameraVideo.videoHeight || 480;
+      context.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        selectedFile = new File([blob], 'camera_capture.jpg', { type: 'image/jpeg' });
+        const url = URL.createObjectURL(blob);
+        previewImage.src = url;
+        previewImage.style.display = 'block';
+        stopCamera();
+        statusText.textContent = 'Captured image ready.';
+      }, 'image/jpeg');
+    });
+
+    let forceRerun = false;
+
+    function runScreening(force = false) {
+      if (!selectedFile) {
+        resultBox.textContent = 'Please choose an image or use the camera first.';
+        return;
+      }
+
+      forceRerun = force;
+      resultBox.textContent = 'Running model...';
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      if (force) formData.append('force', 'true');
+
+      try {
+        const res = await apiFetch('/run-model', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Request failed');
+        }
+
+        const text = data.output || 'No output returned.';
+        resultBox.textContent = text;
+        const details = data.details || {};
+        const quality = details.quality || {};
+        const confidence = typeof details.confidence === 'number' ? `${Math.round(details.confidence * 100)}%` : 'not available';
+        const feedback = Array.isArray(quality.feedback) ? quality.feedback.join(', ') : 'not available';
+        const diabetesRisk = details.diabetes_risk || {};
+        const riskText = diabetesRisk.risk || diabetesRisk.message || 'Diabetes risk prediction is unavailable.';
+        const lesionCounts = details.lesion_counts || {};
+        const severityIndicators = details.severity_indicators || [];
+        const probabilities = details.probabilities || [];
+        
+        let insightLines = [
+          `MODEL REVIEW`,
+          `${details.model_method || 'Development baseline'}`,
+          `Confidence: ${confidence}. Image quality: ${quality.passed ? 'passed' : 'needs retake'} (${feedback}).`,
+          `Retinal-image diabetes risk: ${riskText}`,
+          `${details.review_note || 'A clinician must confirm this screening result.'}`,
+        ];
+        
+        if (Object.keys(lesionCounts).length > 0) {
+          insightLines.push('');
+          insightLines.push('LESION COUNTS:');
+          insightLines.push(`  Microaneurysms: ${lesionCounts.microaneurysms || 0}`);
+          insightLines.push(`  Exudates: ${lesionCounts.exudates || 0}`);
+          insightLines.push(`  Hemorrhages: ${lesionCounts.haemorrhages || 0}`);
+          insightLines.push(`  Neovascularization: ${lesionCounts.neovascularisation || 0}`);
+        }
+        
+        if (severityIndicators.length > 0) {
+          insightLines.push('');
+          insightLines.push('KEY FINDINGS:');
+          severityIndicators.forEach(ind => insightLines.push(`  * ${ind}`));
+        }
+        
+        if (probabilities.length === 5) {
+          const labels = ['No DR', 'Mild NPDR', 'Moderate NPDR', 'Severe NPDR', 'PDR'];
+          insightLines.push('');
+          insightLines.push('PROBABILITIES:');
+          probabilities.forEach((p, i) => insightLines.push(`  ${labels[i]}: ${(p * 100).toFixed(1)}%`));
+        }
+        
+        modelInsight.textContent = insightLines.join('\n');
+        currentUpload = { filename: data.filename, image_hash: data.image_hash };
+        teachStatus.textContent = '';
+        loadHistory();
+      } catch (err) {
+        resultBox.textContent = 'Error: ' + err.message;
+      }
+    }
+
+    submitBtn.addEventListener('click', () => runScreening(false));
+    forceRerunBtn.addEventListener('click', () => runScreening(true));
+  </script>
+</body>
+</html>
